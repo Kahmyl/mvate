@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 import { UserDocument } from './user.model'
 
-export interface LoginDocument extends mongoose.Document{
+export interface SessionDocument extends mongoose.Document{
     user: UserDocument["_id"];
     valid: boolean;
     userAgent: string;
@@ -9,15 +9,15 @@ export interface LoginDocument extends mongoose.Document{
     updatedAT: Date;
 }
 
-const LoginSchema = new mongoose.Schema(
+const sessionSchema = new mongoose.Schema(
     {
-        user: {type: mongoose.Schema.Types.ObjectId, ref: "User"},
+        user: {type: mongoose.Schema.Types.ObjectId , ref: "User"},
         valid: {type: Boolean, default: true },
         userAgent: {type: String},
     },
     { timestamps: true}
 );
 
-const Login = mongoose.model<LoginDocument>("Login", LoginSchema)
+const Session = mongoose.model<SessionDocument>("Session", sessionSchema)
 
-export default Login;
+export default Session;

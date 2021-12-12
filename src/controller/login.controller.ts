@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { validatePassword } from '../service/user.service'
-import { createAccessToken, createSession } from '../service/session.service';
-import { sign } from 'jsonwebtoken';
+import { createSession } from '../service/session.service';
 import config from 'config'
+import { signJWT } from '../utils/jwt.utils';
 
 export async function createLoginHandler(req:Request, res:Response) {
     const user = await validatePassword(req.body)
@@ -13,12 +13,16 @@ export async function createLoginHandler(req:Request, res:Response) {
 
     const session = await createSession(user._id , req.get("user-agent") || "");
 
-    const accessToken = createAccessToken({
-        user,
-        session,
-    });
+    const accessToken = signJWT(
+        {...user, session: session._id }, 
+        {expiresIn: config.get("accessTokenTl")}
+    );
 
-    // const refreshToken = sign(session, {
-    //     expiresIn: config.get("refreshTokenTl")
-    // })
+    const refreshToken = signJWT(
+        {...user, session: session._id }, 
+        {expiresIn: config.get("accessTokenTl")}
+    );
+
+    return res.cookie("accessToken", accessToken,{maxAge: 1000 * 60 * 30, httpOnly: true,}).send({accessToken, refreshToken})
+
 }

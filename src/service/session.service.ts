@@ -1,11 +1,8 @@
-import { LeanDocument } from 'mongoose';
-import Login, { LoginDocument } from '../model/login.model'
-import config from 'config'
-import { UserDocument } from '../model/user.model';
-import { sign } from '../utils/jwt.utils'
+import { FilterQuery } from 'mongoose';
+import Session, { SessionDocument } from '../model/session.model'
 
-export async function createSession(userId: string, userAgent: string) {
-    const session = await Login.create({
+export async function createSession(userId: any, userAgent: string) {
+    const session = await Session.create({
         user: userId,
         userAgent
     })
@@ -13,22 +10,7 @@ export async function createSession(userId: string, userAgent: string) {
     return session.toJSON();
 }
 
-export function createAccessToken({
-    user,
-    session
-}: {
-    user:
-      | Omit<UserDocument, "password">
-      | LeanDocument<Omit<UserDocument, "password">>;
-    session:
-      | Omit<LoginDocument, "password">
-      | LeanDocument<Omit<LoginDocument, "password">>;
 
-}) {
-    const accessToken = sign(
-        {...user, session: session._id },
-        { expiresIn: config.get("accessTokenTl")}
-    );
-
-    return accessToken;
+export async function getSessions(query: FilterQuery<SessionDocument> ){
+    return Session.find(query).lean();
 }
