@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import { UserDocument } from './user.model'
 
 export interface OptionsDocument extends mongoose.Document {
-    options: string;
+    option: string;
     votes: number;
 }
 
@@ -10,22 +10,17 @@ export interface PollDocument extends mongoose.Document {
     user: UserDocument["_id"]; 
     title: string;
     description: number;
-    options: OptionsDocument;
+    options: OptionsDocument[];
     voted: [UserDocument["_id"]]
     expires: Date;
-    createdAT: Date;
-    updatedAT: Date;
-}
-
-export interface VoteDocument extends mongoose.Document {
-    options: OptionsDocument;
-    voted: [UserDocument["_id"]]
+    createdAT?: Date;
+    updatedAT?: Date;
 }
 
 const Schema = mongoose.Schema
 
 const OptionsSchema = new Schema({
-    options: String,
+    option: String,
     votes: { type: Number, default: 0}
 })
 

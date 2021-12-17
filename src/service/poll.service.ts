@@ -1,11 +1,12 @@
 import { DocumentDefinition, QueryOptions, FilterQuery, UpdateQuery } from "mongoose";
-import Poll, { PollDocument, VoteDocument } from "../model/poll.model";
+import Poll, { PollDocument } from "../model/poll.model";
+import { UserDocument } from "../model/user.model";
 
 export async function getPolls(){
     return Poll.find({}).populate('user', ['name', 'id']);
 }
 
-export async function findPoll(input: DocumentDefinition<VoteDocument["_id"]>){
+export async function findPoll(input: DocumentDefinition<UserDocument["_id"]>){
     return Poll.findById(input);
 }
 
