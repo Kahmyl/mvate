@@ -1,9 +1,15 @@
 import { Request, Response } from 'express';
-import { createPoll, getPolls, findPoll } from '../service/poll.service';
+import { createPoll, getPolls, findPoll, PollPayload } from '../service/poll.service';
 import log from '../log';
-import { PollDocument} from '../model/poll.model';
 import { UserDocument } from '../model/user.model';
 
+export interface PollBody{
+    user: UserDocument["_id"]; 
+    title: string;
+    description: number;
+    options: [string];
+    expires: Date;
+}
 
 export async function PollsHandler(req: Request, res: Response) {
 
@@ -15,15 +21,14 @@ export async function PollsHandler(req: Request, res: Response) {
 export async function createPollHandler(req: Request, res: Response) {
     try{
         const userId = res.locals.user._id
-        const {title, description, options, voted, expires}: PollDocument = req.body;
+        const {title, description, options, expires}: PollBody = req.body;
         const poll = await createPoll({
             user: userId,
             title,
             description,
-            options: options.map(option => {
-                option.option, option.votes:0
-            }),
-            voted,
+            options: options.map(option => ({
+                option, votes:0
+            })),
             expires,
         });
         return res.send(poll);
@@ -36,8 +41,7 @@ export async function createPollHandler(req: Request, res: Response) {
 export async function voteHandler(req: Request, res: Response) {
     try {
         const userId = res.locals.user._id
-        const  _id : UserDocument["_id"] = req.body.id
-        const {answer}: UserDocument["_id"] = req.body
+        const {answer, _id}: UserDocument["_id"] = req.body
         if (answer){
             const poll = await findPoll({_id})
     

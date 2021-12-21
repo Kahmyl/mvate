@@ -23,6 +23,7 @@ export async function createLoginHandler(req:Request, res:Response) {
         {expiresIn: config.get("accessTokenTl")}
     );
 
-    return res.cookie("accessToken", accessToken,{maxAge: 1000 * 60 * 30, httpOnly: true,}).send({accessToken, refreshToken})
+    return res.setHeader('x-refresh', refreshToken).cookie("accessToken", accessToken,{maxAge: 1000 * 60 * 30, httpOnly: true,}).send({accessToken, refreshToken}).setHeader('x-refresh', refreshToken)
+
 
 }

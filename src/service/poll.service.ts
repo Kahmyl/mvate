@@ -2,17 +2,28 @@ import { DocumentDefinition, QueryOptions, FilterQuery, UpdateQuery } from "mong
 import Poll, { PollDocument } from "../model/poll.model";
 import { UserDocument } from "../model/user.model";
 
+export interface OptionsPayload{
+    option: string;
+    votes: number;
+}
+
+export interface PollPayload{
+    user: UserDocument["_id"]; 
+    title: string;
+    description: number;
+    options: OptionsPayload[];
+    expires: Date;
+}
+
 export async function getPolls(){
     return Poll.find({}).populate('user', ['name', 'id']);
 }
 
-export async function findPoll(input: DocumentDefinition<UserDocument["_id"]>){
+export async function findPoll(input: UserDocument["_id"]){
     return Poll.findById(input);
 }
 
-export async function createPoll(
-    input: DocumentDefinition<Omit<PollDocument, "createdAt" | "updatedAt">>
-){
+export async function createPoll(input: PollPayload){
     return Poll.create(input);
 }
 
@@ -27,3 +38,5 @@ export async function updatePoll(
 export async function deletePoll(query: FilterQuery<PollDocument>){
     return Poll.deleteOne(query);
 }
+
+

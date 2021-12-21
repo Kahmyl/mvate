@@ -6,7 +6,7 @@ export default{
     host: 'localhost',
     dbURI: process.env.DVENT_DB_URI,
     saltWorkFactor: 10,
-    accessTokenTl: '15m',
+    accessTokenTl: '-1',
     refreshTokenTl: '1y',
     privateKey: `-----BEGIN RSA PRIVATE KEY-----
 MIICWwIBAAKBgGRqEKB1h0q1jmLePaxwoZSbwp+2l0tYQPT/sazbNgLUci84k0s6
